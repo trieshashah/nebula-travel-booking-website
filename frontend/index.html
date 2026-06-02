@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nebula Travel — Book Your Cosmic Journey</title>
+  <link rel="stylesheet" href="css/nebula.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B5CF6">
+</head>
+<body data-page="home">
+  <div class="nebula-bg"></div>
+  <canvas id="starfield"></canvas>
+
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-orb">🌌</div>
+      <span class="nav-logo-text">NEBULA</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="my-bookings.html">My Bookings</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="admin.html">Admin</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="theme-toggle" title="Change theme">🌌</button>
+      <a href="my-bookings.html"><button class="btn-ghost">My Trips</button></a>
+      <a href="profile.html"><button class="btn-primary">Sign In</button></a>
+    </div>
+    <button class="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-mobile">
+    <a href="index.html">🏠 Home</a>
+    <a href="my-bookings.html">🎫 My Bookings</a>
+    <a href="profile.html">👤 Profile</a>
+    <a href="admin.html">⚡ Admin</a>
+  </div>
+
+  <!-- HERO -->
+  <div class="page-wrapper">
+    <section class="hero">
+      <div class="hero-badge">✦ INDIA'S FIRST COSMIC BOOKING EXPERIENCE</div>
+
+      <h1 class="hero-title">
+        <span class="line1">TRAVEL BEYOND</span>
+        <span class="line2">THE STARS AWAIT</span>
+      </h1>
+      <p class="hero-subtitle">Book buses, trains, flights & taxis across India — through a portal of pure cosmic energy.</p>
+
+      <!-- SEARCH PORTAL -->
+      <div class="search-portal">
+        <div class="portal-tabs">
+          <button class="portal-tab active" data-mode="bus">🚌 Bus</button>
+          <button class="portal-tab" data-mode="train">🚂 Train</button>
+          <button class="portal-tab" data-mode="flight">✈️ Flight</button>
+          <button class="portal-tab" data-mode="taxi">🚕 Taxi</button>
+        </div>
+
+        <div class="portal-card">
+          <form class="search-form" novalidate>
+            <div class="search-grid">
+              <!-- From -->
+              <div class="holo-input-wrap" style="position:relative;">
+                <label class="holo-input-label">🚀 Departure City</label>
+                <input type="text" id="fromCity" class="holo-input" autocomplete="off" placeholder=" ">
+                <div class="holo-input-scan"></div>
+                <div class="autocomplete-dropdown" id="fromDropdown" style="display:none;"></div>
+              </div>
+
+              <!-- Swap -->
+              <div style="display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;">
+                <button type="button" class="swap-btn" title="Swap cities">⇄</button>
+              </div>
+
+              <!-- To -->
+              <div class="holo-input-wrap" style="position:relative;">
+                <label class="holo-input-label">🌌 Destination City</label>
+                <input type="text" id="toCity" class="holo-input" autocomplete="off" placeholder=" ">
+                <div class="holo-input-scan"></div>
+                <div class="autocomplete-dropdown" id="toDropdown" style="display:none;"></div>
+              </div>
+            </div>
+
+            <div class="search-row2">
+              <!-- Date -->
+              <div class="holo-input-wrap">
+                <label class="holo-input-label">📅 Travel Date</label>
+                <input type="date" id="travelDate" class="holo-input" placeholder=" ">
+                <div class="holo-input-scan"></div>
+              </div>
+
+              <!-- Passengers -->
+              <div class="holo-input-wrap" style="position:relative;">
+                <label class="holo-input-label">👥 Passengers</label>
+                <button type="button" class="holo-input passenger-trigger" style="text-align:left;cursor:pointer;width:100%;">
+                  <span class="passenger-val">1 Passenger</span>
+                </button>
+                <div class="holo-input-scan"></div>
+                <div class="passenger-dropdown" style="display:none;">
+                  <div class="passenger-row" data-type="adults">
+                    <div class="passenger-label">Adults<span>12+ years</span></div>
+                    <div class="counter-controls">
+                      <button type="button" class="counter-btn" data-dir="-">−</button>
+                      <span class="counter-val">1</span>
+                      <button type="button" class="counter-btn" data-dir="+">+</button>
+                    </div>
+                  </div>
+                  <div class="passenger-row" data-type="children">
+                    <div class="passenger-label">Children<span>2–11 years</span></div>
+                    <div class="counter-controls">
+                      <button type="button" class="counter-btn" data-dir="-">−</button>
+                      <span class="counter-val">0</span>
+                      <button type="button" class="counter-btn" data-dir="+">+</button>
+                    </div>
+                  </div>
+                  <div class="passenger-row" data-type="seniors">
+                    <div class="passenger-label">Seniors<span>60+ years</span></div>
+                    <div class="counter-controls">
+                      <button type="button" class="counter-btn" data-dir="-">−</button>
+                      <span class="counter-val">0</span>
+                      <button type="button" class="counter-btn" data-dir="+">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Search -->
+              <button type="submit" class="search-btn">🔭 SEARCH</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS STRIP -->
+    <div class="stats-strip">
+      <div class="stat-item reveal">
+        <div class="stat-number"><span class="count-up">2,50,000</span>+</div>
+        <div class="stat-label">Happy Travelers</div>
+      </div>
+      <div class="stat-item reveal" style="transition-delay:0.1s;">
+        <div class="stat-number"><span class="count-up">500</span>+</div>
+        <div class="stat-label">Cosmic Routes</div>
+      </div>
+      <div class="stat-item reveal" style="transition-delay:0.2s;">
+        <div class="stat-number"><span class="count-up">50</span>+</div>
+        <div class="stat-label">Cities Connected</div>
+      </div>
+      <div class="stat-item reveal" style="transition-delay:0.3s;">
+        <div class="stat-number"><span class="count-up">99</span>%</div>
+        <div class="stat-label">On-Time Launches</div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-label">Why choose us</div>
+        <h2 class="section-title">Travel at Warp Speed</h2>
+      </div>
+      <div class="features-grid">
+        <div class="glass-card feature-card tilt-card reveal">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-title">Instant Booking</div>
+          <div class="feature-desc">Confirm seats across 500+ routes in under 30 seconds. No loading black holes, no waiting nebulae.</div>
+        </div>
+        <div class="glass-card feature-card tilt-card reveal" style="transition-delay:0.1s;">
+          <div class="feature-icon">🛡️</div>
+          <div class="feature-title">Cosmic Safety</div>
+          <div class="feature-desc">Every vehicle tracked in real-time. Star-rated operators only. Your safety is our prime directive.</div>
+        </div>
+        <div class="glass-card feature-card tilt-card reveal" style="transition-delay:0.2s;">
+          <div class="feature-icon">💫</div>
+          <div class="feature-title">Best Price Orbits</div>
+          <div class="feature-desc">Compare fares across galaxy-class operators. Our AI scans 10,000+ price points for your cheapest route.</div>
+        </div>
+        <div class="glass-card feature-card tilt-card reveal" style="transition-delay:0.3s;">
+          <div class="feature-icon">🎫</div>
+          <div class="feature-title">Digital Boarding Pass</div>
+          <div class="feature-desc">Receive holographic e-tickets instantly. No printouts needed — just your glowing phone screen.</div>
+        </div>
+        <div class="glass-card feature-card tilt-card reveal" style="transition-delay:0.4s;">
+          <div class="feature-icon">🔄</div>
+          <div class="feature-title">Free Cancellation</div>
+          <div class="feature-desc">Plans change at the speed of light. Cancel up to 2 hours before departure with zero penalty.</div>
+        </div>
+        <div class="glass-card feature-card tilt-card reveal" style="transition-delay:0.5s;">
+          <div class="feature-icon">🌐</div>
+          <div class="feature-title">24/7 Nebula Support</div>
+          <div class="feature-desc">Our cosmic crew is always online — chat, call, or summon us via WhatsApp from anywhere in the universe.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POPULAR ROUTES -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-label">Most booked</div>
+        <h2 class="section-title">Popular Cosmic Routes</h2>
+      </div>
+      <div class="features-grid">
+        <!-- Route cards -->
+        <div class="glass-card tilt-card reveal" style="padding:1.5rem;cursor:pointer;" onclick="window.location.href='search-results.html?from=Mumbai&to=Pune&date=2026-03-22'">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+            <span style="font-size:1.5rem;">🚌</span>
+            <span style="font-size:0.72rem;color:var(--nebula-primary);letter-spacing:1px;background:rgba(139,92,246,0.1);padding:3px 10px;border-radius:20px;border:1px solid rgba(139,92,246,0.3);">POPULAR</span>
+          </div>
+          <div style="font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;margin-bottom:6px;">Mumbai → Pune</div>
+          <div style="color:var(--text-muted);font-size:0.8rem;margin-bottom:1rem;">3 hours · 50+ buses daily</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:0.85rem;color:var(--text-secondary);">Starting from</div>
+            <div style="font-family:'Orbitron',monospace;font-size:1.1rem;background:linear-gradient(135deg,var(--nebula-primary),var(--nebula-pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">₹299</div>
+          </div>
+        </div>
+        <div class="glass-card tilt-card reveal" style="padding:1.5rem;cursor:pointer;transition-delay:0.1s;" onclick="window.location.href='search-results.html?from=Delhi&to=Agra&date=2026-03-22'">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+            <span style="font-size:1.5rem;">🚂</span>
+            <span style="font-size:0.72rem;color:var(--nebula-cyan);letter-spacing:1px;background:rgba(6,182,212,0.1);padding:3px 10px;border-radius:20px;border:1px solid rgba(6,182,212,0.3);">EXPRESS</span>
+          </div>
+          <div style="font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;margin-bottom:6px;">Delhi → Agra</div>
+          <div style="color:var(--text-muted);font-size:0.8rem;margin-bottom:1rem;">2 hours · 20+ trains</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:0.85rem;color:var(--text-secondary);">Starting from</div>
+            <div style="font-family:'Orbitron',monospace;font-size:1.1rem;background:linear-gradient(135deg,var(--nebula-cyan),var(--nebula-blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">₹185</div>
+          </div>
+        </div>
+        <div class="glass-card tilt-card reveal" style="padding:1.5rem;cursor:pointer;transition-delay:0.2s;" onclick="window.location.href='search-results.html?from=Bangalore&to=Chennai&date=2026-03-22'">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+            <span style="font-size:1.5rem;">✈️</span>
+            <span style="font-size:0.72rem;color:var(--nebula-pink);letter-spacing:1px;background:rgba(236,72,153,0.1);padding:3px 10px;border-radius:20px;border:1px solid rgba(236,72,153,0.3);">FLIGHT</span>
+          </div>
+          <div style="font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;margin-bottom:6px;">Bangalore → Chennai</div>
+          <div style="color:var(--text-muted);font-size:0.8rem;margin-bottom:1rem;">1 hr 10 min · 15+ flights</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:0.85rem;color:var(--text-secondary);">Starting from</div>
+            <div style="font-family:'Orbitron',monospace;font-size:1.1rem;background:linear-gradient(135deg,var(--nebula-pink),var(--nebula-gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">₹2,499</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-logo">✦ NEBULA TRAVEL ✦</div>
+      <div>Traversing the cosmos of Indian travel since 2024</div>
+      <div style="margin-top:1rem;display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;">
+        <a href="#" style="color:var(--text-muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--nebula-primary)'" onmouseout="this.style.color='var(--text-muted)'">About</a>
+        <a href="#" style="color:var(--text-muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--nebula-primary)'" onmouseout="this.style.color='var(--text-muted)'">Support</a>
+        <a href="#" style="color:var(--text-muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--nebula-primary)'" onmouseout="this.style.color='var(--text-muted)'">Privacy</a>
+        <a href="#" style="color:var(--text-muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--nebula-primary)'" onmouseout="this.style.color='var(--text-muted)'">Terms</a>
+      </div>
+      <div style="margin-top:1.5rem;color:var(--text-muted);font-size:0.72rem;">© 2026 Nebula Travel · Made with 💜 in Mumbai · Crafted for the cosmos</div>
+    </footer>
+  </div>
+  <script src="js/auth.js"></script>
+  <script src="js/cosmic.js"></script>
+</body>
+</html>

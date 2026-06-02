@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results — Nebula Travel</title>
+  <link rel="stylesheet" href="css/nebula.css">
+</head>
+<body data-page="results">
+  <div class="nebula-bg"></div>
+  <canvas id="starfield"></canvas>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-orb">🌌</div>
+      <span class="nav-logo-text">NEBULA</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="my-bookings.html">My Bookings</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="admin.html">Admin</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="theme-toggle">🌌</button>
+      <a href="my-bookings.html"><button class="btn-ghost">My Trips</button></a>
+    </div>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="nav-mobile">
+    <a href="index.html">🏠 Home</a>
+    <a href="my-bookings.html">🎫 My Bookings</a>
+    <a href="profile.html">👤 Profile</a>
+  </div>
+
+  <div class="page-wrapper">
+    <!-- Quick search bar at top -->
+    <div style="background:rgba(2,1,10,0.5);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:70px 2rem 1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+      <a href="index.html" style="color:var(--nebula-primary);text-decoration:none;font-size:0.85rem;">← Modify Search</a>
+      <div style="flex:1;font-family:'Orbitron',monospace;font-size:0.9rem;color:var(--text-primary);" class="search-route-display">Loading route...</div>
+      <div style="font-size:0.8rem;color:var(--text-muted);" id="routeDateDisplay"></div>
+    </div>
+
+    <div class="results-layout">
+      <!-- FILTER SIDEBAR -->
+      <div class="filter-sidebar">
+        <div class="glass-card filter-card" data-group="price">
+          <div class="filter-title">✦ Price Range</div>
+          <div style="margin-bottom:1rem;">
+            <input type="range" class="price-slider" min="0" max="5000" value="3000" style="width:100%;">
+            <div class="price-display">
+              <span>₹0</span>
+              <span class="price-max">₹3,000</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card filter-card" data-group="type">
+          <div class="filter-title">🚌 Vehicle Type</div>
+          <label class="filter-option">
+            <input type="checkbox" checked>
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">AC Sleeper</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" checked>
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">Non-AC Sleeper</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" checked>
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">Volvo AC</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" checked>
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">Seater (Semi)</span>
+          </label>
+        </div>
+
+        <div class="glass-card filter-card" data-group="dep">
+          <div class="filter-title">⏰ Departure Time</div>
+          <label class="filter-option">
+            <input type="checkbox" checked>
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">🌅 Early Morning (0–6)</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" checked>
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">☀️ Morning (6–12)</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" checked>
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">🌆 Afternoon (12–18)</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" checked>
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">🌙 Night (18–24)</span>
+          </label>
+        </div>
+
+        <div class="glass-card filter-card" data-group="rating">
+          <div class="filter-title">⭐ Operator Rating</div>
+          <label class="filter-option">
+            <input type="checkbox" checked>
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">★★★★★ 5 Star</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" checked>
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">★★★★☆ 4+ Star</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox">
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">★★★☆☆ 3+ Star</span>
+          </label>
+        </div>
+
+        <div class="glass-card filter-card" data-group="amenities">
+          <div class="filter-title">✨ Amenities</div>
+          <label class="filter-option">
+            <input type="checkbox">
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">📶 WiFi</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox">
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">🍱 Meals</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox">
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">🔌 Charging Port</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox">
+            <div class="filter-checkbox"></div>
+            <span class="filter-option-label">🎬 Entertainment</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div>
+        <div class="results-header">
+          <div class="results-count"><span id="resultCount">6</span> cosmic journeys found</div>
+          <select class="sort-select">
+            <option value="cheapest">Sort: Cheapest First</option>
+            <option value="fastest">Sort: Fastest Route</option>
+            <option value="rated">Sort: Highest Rated</option>
+            <option value="earliest">Sort: Earliest Departure</option>
+          </select>
+        </div>
+        <div id="resultsContainer"></div>
+        <div id="staticCards" style="display:none;">
+
+        <!-- Result Cards -->
+        <div class="glass-card result-card tilt-card reveal" data-price="850">
+          <div class="result-card-inner">
+            <div class="operator-logo">🌟</div>
+            <div>
+              <div style="font-family:'Orbitron',monospace;font-size:0.85rem;font-weight:700;color:var(--nebula-primary);margin-bottom:6px;">Mumbai Supernova Express</div>
+              <div class="result-route">
+                <div>
+                  <div class="route-time">22:30</div>
+                  <div class="route-city">Mumbai</div>
+                </div>
+                <div class="route-line">
+                  <div class="route-duration">8h 30m</div>
+                  <div class="route-dotted"></div>
+                </div>
+                <div>
+                  <div class="route-time">07:00</div>
+                  <div class="route-city">Delhi</div>
+                </div>
+              </div>
+              <div class="result-tags" style="flex-direction:row;margin-top:10px;">
+                <span class="tag tag-ac">❄️ AC</span>
+                <span class="tag tag-sleeper">🛏 Sleeper</span>
+                <span class="tag tag-volvo">⭐ Volvo</span>
+              </div>
+            </div>
+            <div style="text-align:center;">
+              <div class="avail-ring">
+                <svg width="48" height="48">
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(139,92,246,0.15)" stroke-width="3"/>
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="url(#ring1)" stroke-width="3" stroke-linecap="round" stroke-dasharray="95 31"/>
+                  <defs><linearGradient id="ring1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs>
+                </svg>
+                <span class="avail-ring-num">24</span>
+              </div>
+              <div style="font-size:0.68rem;color:var(--text-muted);margin-top:4px;">seats left</div>
+            </div>
+            <div class="result-price-wrap">
+              <div class="result-price">₹850</div>
+              <div class="result-per">per seat</div>
+              <div class="result-seats">⭐ 4.8 rated</div>
+              <button class="book-now-btn">BOOK NOW</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card result-card tilt-card reveal" style="transition-delay:0.08s;" data-price="650">
+          <div class="result-card-inner">
+            <div class="operator-logo">🪐</div>
+            <div>
+              <div style="font-family:'Orbitron',monospace;font-size:0.85rem;font-weight:700;color:var(--nebula-cyan);margin-bottom:6px;">Saturn Ring Travels</div>
+              <div class="result-route">
+                <div>
+                  <div class="route-time">20:00</div>
+                  <div class="route-city">Mumbai</div>
+                </div>
+                <div class="route-line">
+                  <div class="route-duration">9h 15m</div>
+                  <div class="route-dotted"></div>
+                </div>
+                <div>
+                  <div class="route-time">05:15</div>
+                  <div class="route-city">Delhi</div>
+                </div>
+              </div>
+              <div class="result-tags" style="flex-direction:row;margin-top:10px;">
+                <span class="tag tag-ac">❄️ AC</span>
+                <span class="tag tag-sleeper">🛏 Sleeper</span>
+              </div>
+            </div>
+            <div style="text-align:center;">
+              <div class="avail-ring">
+                <svg width="48" height="48">
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(6,182,212,0.15)" stroke-width="3"/>
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="#06B6D4" stroke-width="3" stroke-linecap="round" stroke-dasharray="75 51"/>
+                </svg>
+                <span class="avail-ring-num">18</span>
+              </div>
+              <div style="font-size:0.68rem;color:var(--text-muted);margin-top:4px;">seats left</div>
+            </div>
+            <div class="result-price-wrap">
+              <div class="result-price">₹650</div>
+              <div class="result-per">per seat</div>
+              <div class="result-seats">⭐ 4.5 rated</div>
+              <button class="book-now-btn">BOOK NOW</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card result-card tilt-card reveal" style="transition-delay:0.16s;" data-price="1200">
+          <div class="result-card-inner">
+            <div class="operator-logo">💫</div>
+            <div>
+              <div style="font-family:'Orbitron',monospace;font-size:0.85rem;font-weight:700;color:var(--nebula-pink);margin-bottom:6px;">Quasar Luxury Coaches</div>
+              <div class="result-route">
+                <div>
+                  <div class="route-time">19:30</div>
+                  <div class="route-city">Mumbai</div>
+                </div>
+                <div class="route-line">
+                  <div class="route-duration">8h 00m</div>
+                  <div class="route-dotted"></div>
+                </div>
+                <div>
+                  <div class="route-time">03:30</div>
+                  <div class="route-city">Delhi</div>
+                </div>
+              </div>
+              <div class="result-tags" style="flex-direction:row;margin-top:10px;">
+                <span class="tag tag-volvo">⭐ Premium</span>
+                <span class="tag tag-ac">❄️ AC</span>
+                <span class="tag tag-sleeper">📶 WiFi</span>
+              </div>
+            </div>
+            <div style="text-align:center;">
+              <div class="avail-ring">
+                <svg width="48" height="48">
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(236,72,153,0.15)" stroke-width="3"/>
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="#EC4899" stroke-width="3" stroke-linecap="round" stroke-dasharray="30 96"/>
+                </svg>
+                <span class="avail-ring-num">7</span>
+              </div>
+              <div style="font-size:0.68rem;color:var(--nebula-pink);margin-top:4px;font-weight:600;">ALMOST FULL</div>
+            </div>
+            <div class="result-price-wrap">
+              <div class="result-price">₹1,200</div>
+              <div class="result-per">per seat</div>
+              <div class="result-seats">⭐ 4.9 rated</div>
+              <button class="book-now-btn">BOOK NOW</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card result-card tilt-card reveal" style="transition-delay:0.24s;" data-price="550">
+          <div class="result-card-inner">
+            <div class="operator-logo">⚡</div>
+            <div>
+              <div style="font-family:'Orbitron',monospace;font-size:0.85rem;font-weight:700;color:var(--nebula-gold);margin-bottom:6px;">Pulsar Night Bus</div>
+              <div class="result-route">
+                <div>
+                  <div class="route-time">23:00</div>
+                  <div class="route-city">Mumbai</div>
+                </div>
+                <div class="route-line">
+                  <div class="route-duration">10h 00m</div>
+                  <div class="route-dotted"></div>
+                </div>
+                <div>
+                  <div class="route-time">09:00</div>
+                  <div class="route-city">Delhi</div>
+                </div>
+              </div>
+              <div class="result-tags" style="flex-direction:row;margin-top:10px;">
+                <span class="tag tag-sleeper">🛏 Sleeper</span>
+              </div>
+            </div>
+            <div style="text-align:center;">
+              <div class="avail-ring">
+                <svg width="48" height="48">
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(245,158,11,0.15)" stroke-width="3"/>
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="#F59E0B" stroke-width="3" stroke-linecap="round" stroke-dasharray="115 11"/>
+                </svg>
+                <span class="avail-ring-num">32</span>
+              </div>
+              <div style="font-size:0.68rem;color:var(--text-muted);margin-top:4px;">seats left</div>
+            </div>
+            <div class="result-price-wrap">
+              <div class="result-price">₹550</div>
+              <div class="result-per">per seat</div>
+              <div class="result-seats">⭐ 4.2 rated</div>
+              <button class="book-now-btn">BOOK NOW</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card result-card tilt-card reveal" style="transition-delay:0.32s;" data-price="975">
+          <div class="result-card-inner">
+            <div class="operator-logo">🌙</div>
+            <div>
+              <div style="font-family:'Orbitron',monospace;font-size:0.85rem;font-weight:700;color:var(--nebula-blue);margin-bottom:6px;">Black Hole Bus Lines</div>
+              <div class="result-route">
+                <div>
+                  <div class="route-time">21:45</div>
+                  <div class="route-city">Mumbai</div>
+                </div>
+                <div class="route-line">
+                  <div class="route-duration">8h 45m</div>
+                  <div class="route-dotted"></div>
+                </div>
+                <div>
+                  <div class="route-time">06:30</div>
+                  <div class="route-city">Delhi</div>
+                </div>
+              </div>
+              <div class="result-tags" style="flex-direction:row;margin-top:10px;">
+                <span class="tag tag-volvo">⭐ Volvo</span>
+                <span class="tag tag-ac">❄️ AC</span>
+                <span class="tag tag-sleeper">🍱 Meals</span>
+              </div>
+            </div>
+            <div style="text-align:center;">
+              <div class="avail-ring">
+                <svg width="48" height="48">
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(59,130,246,0.15)" stroke-width="3"/>
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="#3B82F6" stroke-width="3" stroke-linecap="round" stroke-dasharray="85 41"/>
+                </svg>
+                <span class="avail-ring-num">20</span>
+              </div>
+              <div style="font-size:0.68rem;color:var(--text-muted);margin-top:4px;">seats left</div>
+            </div>
+            <div class="result-price-wrap">
+              <div class="result-price">₹975</div>
+              <div class="result-per">per seat</div>
+              <div class="result-seats">⭐ 4.7 rated</div>
+              <button class="book-now-btn">BOOK NOW</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card result-card tilt-card reveal" style="transition-delay:0.4s;" data-price="1550">
+          <div class="result-card-inner">
+            <div class="operator-logo">🛸</div>
+            <div>
+              <div style="font-family:'Orbitron',monospace;font-size:0.85rem;font-weight:700;background:linear-gradient(135deg,var(--nebula-primary),var(--nebula-pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;">Nebula Elite Class</div>
+              <div class="result-route">
+                <div>
+                  <div class="route-time">18:00</div>
+                  <div class="route-city">Mumbai</div>
+                </div>
+                <div class="route-line">
+                  <div class="route-duration">7h 30m</div>
+                  <div class="route-dotted"></div>
+                </div>
+                <div>
+                  <div class="route-time">01:30</div>
+                  <div class="route-city">Delhi</div>
+                </div>
+              </div>
+              <div class="result-tags" style="flex-direction:row;margin-top:10px;">
+                <span class="tag tag-volvo">💎 Elite</span>
+                <span class="tag tag-ac">❄️ AC</span>
+                <span class="tag tag-sleeper">📶 WiFi</span>
+                <span class="tag tag-sleeper">🍱 Meals</span>
+              </div>
+            </div>
+            <div style="text-align:center;">
+              <div class="avail-ring">
+                <svg width="48" height="48">
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(139,92,246,0.15)" stroke-width="3"/>
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="url(#ring2)" stroke-width="3" stroke-linecap="round" stroke-dasharray="50 76"/>
+                  <defs><linearGradient id="ring2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs>
+                </svg>
+                <span class="avail-ring-num">12</span>
+              </div>
+              <div style="font-size:0.68rem;color:var(--nebula-gold);margin-top:4px;font-weight:600;">FILLING FAST</div>
+            </div>
+            <div class="result-price-wrap">
+              <div class="result-price">₹1,550</div>
+              <div class="result-per">per seat</div>
+              <div class="result-seats">⭐ 5.0 rated</div>
+              <button class="book-now-btn">BOOK NOW</button>
+            </div>
+          </div>
+        </div>
+      </div>
+        </div><!-- /staticCards -->
+    </div>
+
+    <footer class="footer">
+      <div class="footer-logo">✦ NEBULA TRAVEL ✦</div>
+      <div>© 2026 Nebula Travel · Made with 💜 in Mumbai</div>
+    </footer>
+  </div>
+  <script src="js/auth.js"></script>
+  <script src="js/cosmic.js"></script>
+  <script>
+    // Show route from URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('from') && params.get('to')) {
+      document.querySelector('.search-route-display').textContent = `${params.get('from')} → ${params.get('to')}`;
+    }
+    if (params.get('date')) {
+      const d = new Date(params.get('date'));
+      document.getElementById('routeDateDisplay').textContent = d.toLocaleDateString('en-IN', { weekday:'short', day:'numeric', month:'short' });
+    }
+  </script>
+</body>
+</html>

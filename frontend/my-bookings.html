@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings — Nebula Travel</title>
+  <link rel="stylesheet" href="css/nebula.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8B5CF6">
+  <style>
+    .bookings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .bookings-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+    .bookings-subtitle { color: var(--text-muted); font-size: 0.88rem; margin-top: 4px; }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .filter-tab {
+      padding: 7px 18px;
+      border-radius: 30px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: 'Exo 2', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+    .filter-tab.active {
+      border-color: var(--nebula-primary);
+      color: var(--nebula-primary);
+      background: rgba(139,92,246,0.1);
+    }
+
+    .pnr-result {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      border-radius: 14px;
+      border: 1px solid var(--glass-border);
+      background: rgba(139,92,246,0.05);
+      display: none;
+    }
+    .pnr-result.show { display: block; animation: fadeInUp 0.4s ease both; }
+    @keyframes fadeInUp { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: none; } }
+
+    .pnr-result-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+    .pnr-result-id { font-family: 'Orbitron', monospace; font-size: 1rem; color: var(--nebula-primary); }
+    .pnr-timeline {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 1.2rem 0;
+      flex-wrap: wrap;
+    }
+    .pnr-stop {
+      text-align: center;
+      min-width: 100px;
+    }
+    .pnr-stop-city { font-weight: 700; font-size: 0.95rem; }
+    .pnr-stop-time { font-family: 'Orbitron', monospace; font-size: 0.8rem; color: var(--nebula-primary); margin-top: 2px; }
+    .pnr-stop-date { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+    .pnr-line {
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, var(--nebula-primary), var(--nebula-pink));
+      min-width: 40px;
+      position: relative;
+    }
+    .pnr-line::after {
+      content: '🚌';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1rem;
+    }
+    .pnr-details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .pnr-detail {
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+    }
+    .pnr-detail-label { font-size: 0.68rem; letter-spacing: 1.5px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .pnr-detail-val { font-size: 0.9rem; font-weight: 600; }
+
+    /* Booking card view */
+    .booking-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .booking-card {
+      padding: 1.5rem;
+      border-radius: var(--radius-card);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .booking-card:hover {
+      border-color: var(--nebula-primary);
+      box-shadow: 0 8px 30px rgba(139,92,246,0.1);
+    }
+    .booking-mode-icon {
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(236,72,153,0.1));
+      border: 1px solid var(--glass-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .booking-info { flex: 1; }
+    .booking-route { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+    .booking-meta { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px; }
+    .booking-operator { font-size: 0.82rem; color: var(--text-secondary); }
+    .booking-right { text-align: right; flex-shrink: 0; }
+    .booking-price { font-family: 'Orbitron', monospace; font-size: 1.1rem; color: var(--nebula-primary); margin-bottom: 8px; }
+    .booking-actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+    .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
+    .empty-text { font-family: 'Orbitron', monospace; font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 0.5rem; }
+    .empty-desc { font-size: 0.82rem; margin-bottom: 1.5rem; }
+
+    @media (max-width: 600px) {
+      .booking-card { grid-template-columns: auto 1fr; }
+      .booking-right { grid-column: 1 / -1; text-align: left; display: flex; align-items: center; justify-content: space-between; }
+    }
+  </style>
+</head>
+<body data-page="bookings">
+  <div class="nebula-bg"></div>
+  <canvas id="starfield"></canvas>
+
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-orb">🌌</div>
+      <span class="nav-logo-text">NEBULA</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="my-bookings.html" class="active">My Bookings</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="admin.html">Admin</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="theme-toggle" title="Change theme">🌌</button>
+      <a href="my-bookings.html"><button class="btn-ghost">My Trips</button></a>
+      <a href="profile.html"><button class="btn-primary">👤 Arjun</button></a>
+    </div>
+    <button class="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-mobile">
+    <a href="index.html">🏠 Home</a>
+    <a href="my-bookings.html">🎫 My Bookings</a>
+    <a href="profile.html">👤 Profile</a>
+    <a href="admin.html">⚡ Admin</a>
+  </div>
+
+  <!-- WORMHOLE LOADER -->
+  <div class="wormhole-overlay" id="wormholeOverlay">
+    <div class="wormhole">
+      <div class="wormhole-ring"></div>
+      <div class="wormhole-ring"></div>
+      <div class="wormhole-ring"></div>
+    </div>
+    <div class="wormhole-text">SCANNING CONSTELLATION...</div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <div class="page-wrapper">
+    <div class="bookings-wrap">
+
+      <!-- HEADER -->
+      <div class="bookings-header">
+        <div>
+          <div class="bookings-title">🎫 MY JOURNEYS</div>
+          <div class="bookings-subtitle">Your cosmic travel history across the stars</div>
+        </div>
+        <a href="index.html"><button class="btn-primary">+ Book New Trip</button></a>
+      </div>
+
+      <!-- PNR CHECKER -->
+      <div class="glass-card pnr-checker reveal">
+        <div style="font-family:'Orbitron',monospace;font-size:0.8rem;letter-spacing:3px;color:var(--text-muted);margin-bottom:1rem;">🔍 PNR STATUS CHECKER</div>
+        <div class="pnr-row">
+          <div class="holo-input-wrap" style="flex:1;">
+            <input class="holo-input" type="text" id="pnrInput" placeholder=" " style="text-transform:uppercase;">
+            <label class="holo-label">Enter PNR Number (e.g. NEB123456)</label>
+          </div>
+          <button class="btn-primary" id="pnrCheckBtn" style="flex-shrink:0;">Track Booking</button>
+        </div>
+        <div style="margin-top:10px;font-size:0.75rem;color:var(--text-muted);">Try: NEB123456 · NEB789012 · NEB345678</div>
+
+        <!-- PNR Result -->
+        <div class="pnr-result" id="pnrResult">
+          <div class="pnr-result-header">
+            <div class="pnr-result-id" id="pnrResultId">NEB123456</div>
+            <div class="status-badge status-confirmed" id="pnrResultStatus">● CONFIRMED</div>
+          </div>
+          <div style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.5rem;" id="pnrResultOperator">Mumbai Supernova Express</div>
+          <div class="pnr-timeline">
+            <div class="pnr-stop">
+              <div class="pnr-stop-city" id="pnrFrom">Mumbai</div>
+              <div class="pnr-stop-time" id="pnrDepTime">21:00</div>
+              <div class="pnr-stop-date" id="pnrDepDate">15 Jan 2026</div>
+            </div>
+            <div class="pnr-line" id="pnrLine"></div>
+            <div class="pnr-stop">
+              <div class="pnr-stop-city" id="pnrTo">Delhi</div>
+              <div class="pnr-stop-time" id="pnrArrTime">07:30</div>
+              <div class="pnr-stop-date" id="pnrArrDate">16 Jan 2026</div>
+            </div>
+          </div>
+          <div class="pnr-details-grid">
+            <div class="pnr-detail">
+              <div class="pnr-detail-label">Passenger</div>
+              <div class="pnr-detail-val" id="pnrPassenger">Arjun Kumar</div>
+            </div>
+            <div class="pnr-detail">
+              <div class="pnr-detail-label">Seat</div>
+              <div class="pnr-detail-val" id="pnrSeat">B7 (Sleeper)</div>
+            </div>
+            <div class="pnr-detail">
+              <div class="pnr-detail-label">Boarding</div>
+              <div class="pnr-detail-val" id="pnrBoarding">Dadar Bus Depot</div>
+            </div>
+            <div class="pnr-detail">
+              <div class="pnr-detail-label">Amount</div>
+              <div class="pnr-detail-val" id="pnrAmount">₹1,299</div>
+            </div>
+          </div>
+          <div style="margin-top:1.2rem;display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn-primary" onclick="showToast('Downloading ticket... 📄','info')">⬇️ Download Ticket</button>
+            <button class="btn-ghost" onclick="showToast('Cancellation request sent.','error')">Cancel Booking</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILTER TABS -->
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all">All Trips (8)</button>
+        <button class="filter-tab" data-filter="upcoming">Upcoming (2)</button>
+        <button class="filter-tab" data-filter="completed">Completed (5)</button>
+        <button class="filter-tab" data-filter="cancelled">Cancelled (1)</button>
+      </div>
+
+      <!-- BOOKING CARDS -->
+      <div class="booking-cards" id="bookingCards">
+
+        <!-- Booking 1 -->
+        <div class="booking-card glass-card reveal" data-status="upcoming">
+          <div class="booking-mode-icon">🚌</div>
+          <div class="booking-info">
+            <div class="booking-route">Mumbai → Delhi</div>
+            <div class="booking-meta">PNR: NEB123456 · 15 Jan 2026 · Dep 21:00 · Arr 07:30</div>
+            <div class="booking-operator">Mumbai Supernova Express · Seat B7 · Sleeper AC</div>
+            <div style="margin-top:8px;"><span class="status-badge status-confirmed">● CONFIRMED</span></div>
+          </div>
+          <div class="booking-right">
+            <div class="booking-price">₹1,299</div>
+            <div class="booking-actions">
+              <button class="action-btn" onclick="showToast('Opening ticket... 📄','info')">View Ticket</button>
+              <button class="action-btn" onclick="showToast('Cancelling booking...','error')">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Booking 2 -->
+        <div class="booking-card glass-card reveal" data-status="upcoming">
+          <div class="booking-mode-icon">✈️</div>
+          <div class="booking-info">
+            <div class="booking-route">Bangalore → Hyderabad</div>
+            <div class="booking-meta">PNR: NEB789012 · 02 Feb 2026 · Dep 06:15 · Arr 07:30</div>
+            <div class="booking-operator">Bangalore Nebula Flight 6E-312 · Seat 14A · Economy</div>
+            <div style="margin-top:8px;"><span class="status-badge status-confirmed">● CONFIRMED</span></div>
+          </div>
+          <div class="booking-right">
+            <div class="booking-price">₹4,500</div>
+            <div class="booking-actions">
+              <button class="action-btn" onclick="showToast('Opening ticket... 📄','info')">View Ticket</button>
+              <button class="action-btn" onclick="showToast('Web check-in opened!','success')">Web Check-in</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Booking 3 -->
+        <div class="booking-card glass-card reveal" data-status="cancelled">
+          <div class="booking-mode-icon">🚌</div>
+          <div class="booking-info">
+            <div class="booking-route">Pune → Goa</div>
+            <div class="booking-meta">PNR: NEB345678 · 12 Dec 2025 · Dep 22:00 · Arr 08:30</div>
+            <div class="booking-operator">Saturn Ring Travels · Seat D3 · Sleeper Non-AC</div>
+            <div style="margin-top:8px;"><span class="status-badge status-cancelled">● CANCELLED</span></div>
+          </div>
+          <div class="booking-right">
+            <div class="booking-price" style="text-decoration:line-through;color:var(--text-muted);font-size:0.9rem;">₹899</div>
+            <div class="booking-actions">
+              <button class="action-btn" onclick="showToast('Refund of ₹719 processed.','success')">Refund Status</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Booking 4 -->
+        <div class="booking-card glass-card reveal" data-status="completed">
+          <div class="booking-mode-icon">🚂</div>
+          <div class="booking-info">
+            <div class="booking-route">Mumbai → Jaipur</div>
+            <div class="booking-meta">PNR: NEB567890 · 20 Nov 2025 · Dep 19:45 · Arr 09:15</div>
+            <div class="booking-operator">Pulsar Night Express · Berth 3 · 3AC</div>
+            <div style="margin-top:8px;"><span class="status-badge status-confirmed" style="background:rgba(100,100,100,0.1);color:var(--text-muted);border-color:rgba(100,100,100,0.2);">● COMPLETED</span></div>
+          </div>
+          <div class="booking-right">
+            <div class="booking-price">₹2,150</div>
+            <div class="booking-actions">
+              <button class="action-btn" onclick="showToast('Thank you for rating! ⭐','success')">Rate Trip</button>
+              <button class="action-btn" onclick="showToast('Downloading receipt...','info')">Receipt</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Booking 5 -->
+        <div class="booking-card glass-card reveal" data-status="completed">
+          <div class="booking-mode-icon">🚌</div>
+          <div class="booking-info">
+            <div class="booking-route">Chennai → Bangalore</div>
+            <div class="booking-meta">PNR: NEB901234 · 05 Nov 2025 · Dep 23:30 · Arr 05:30</div>
+            <div class="booking-operator">Quasar Luxury Coaches · Seat A2 · Volvo AC Sleeper</div>
+            <div style="margin-top:8px;"><span class="status-badge status-confirmed" style="background:rgba(100,100,100,0.1);color:var(--text-muted);border-color:rgba(100,100,100,0.2);">● COMPLETED</span></div>
+          </div>
+          <div class="booking-right">
+            <div class="booking-price">₹1,099</div>
+            <div class="booking-actions">
+              <button class="action-btn" onclick="showToast('Thank you for rating! ⭐','success')">Rate Trip</button>
+              <button class="action-btn" onclick="showToast('Downloading receipt...','info')">Receipt</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Booking 6 -->
+        <div class="booking-card glass-card reveal" data-status="completed">
+          <div class="booking-mode-icon">🚕</div>
+          <div class="booking-info">
+            <div class="booking-route">Mumbai Airport → Bandra</div>
+            <div class="booking-meta">NEB112233 · 20 Oct 2025 · 14:00 · ~45 min</div>
+            <div class="booking-operator">Nebula Cab Service · Innova Crysta · 4 Seats</div>
+            <div style="margin-top:8px;"><span class="status-badge status-confirmed" style="background:rgba(100,100,100,0.1);color:var(--text-muted);border-color:rgba(100,100,100,0.2);">● COMPLETED</span></div>
+          </div>
+          <div class="booking-right">
+            <div class="booking-price">₹650</div>
+            <div class="booking-actions">
+              <button class="action-btn" onclick="showToast('Thank you for rating! ⭐','success')">Rate Trip</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Booking 7 -->
+        <div class="booking-card glass-card reveal" data-status="completed">
+          <div class="booking-mode-icon">✈️</div>
+          <div class="booking-info">
+            <div class="booking-route">Delhi → Kolkata</div>
+            <div class="booking-meta">PNR: NEB445566 · 10 Sep 2025 · Dep 08:00 · Arr 10:15</div>
+            <div class="booking-operator">Cosmic Air 6E-421 · Seat 22F · Economy</div>
+            <div style="margin-top:8px;"><span class="status-badge status-confirmed" style="background:rgba(100,100,100,0.1);color:var(--text-muted);border-color:rgba(100,100,100,0.2);">● COMPLETED</span></div>
+          </div>
+          <div class="booking-right">
+            <div class="booking-price">₹3,800</div>
+            <div class="booking-actions">
+              <button class="action-btn" onclick="showToast('Thank you for rating! ⭐','success')">Rate Trip</button>
+              <button class="action-btn" onclick="showToast('Downloading receipt...','info')">Receipt</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Booking 8 -->
+        <div class="booking-card glass-card reveal" data-status="completed">
+          <div class="booking-mode-icon">🚌</div>
+          <div class="booking-info">
+            <div class="booking-route">Hyderabad → Vijayawada</div>
+            <div class="booking-meta">PNR: NEB778899 · 15 Aug 2025 · Dep 06:00 · Arr 11:00</div>
+            <div class="booking-operator">Black Hole Bus Lines · Seat C5 · AC Seater</div>
+            <div style="margin-top:8px;"><span class="status-badge status-confirmed" style="background:rgba(100,100,100,0.1);color:var(--text-muted);border-color:rgba(100,100,100,0.2);">● COMPLETED</span></div>
+          </div>
+          <div class="booking-right">
+            <div class="booking-price">₹550</div>
+            <div class="booking-actions">
+              <button class="action-btn" onclick="showToast('Thank you for rating! ⭐','success')">Rate Trip</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /booking-cards -->
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-logo">🌌 NEBULA TRAVEL</div>
+      <p>© 2026 Nebula Travel Pvt. Ltd. · Booking the Cosmos, One Journey at a Time</p>
+    </footer>
+  </div>
+  <script src="js/auth.js"></script>
+  <script src="js/cosmic.js"></script>
+  <script>
+    // All logic handled by cosmic.js — initMyBookings()
+    // cancelUserBooking is exposed globally for inline onclick handlers
+    function cancelUserBooking(pnr, btn) {
+      if (!confirm('Cancel booking ' + pnr + '?')) return;
+      showLoader('CANCELLING...');
+      setTimeout(() => {
+        hideLoader();
+        const bookings = JSON.parse(localStorage.getItem('nebula_myBookings') || '[]');
+        const idx = bookings.findIndex(b => b.pnr === pnr);
+        if (idx !== -1) { bookings[idx].status = 'cancelled'; localStorage.setItem('nebula_myBookings', JSON.stringify(bookings)); }
+        const card = btn.closest('.booking-card');
+        if (card) {
+          card.dataset.status = 'cancelled';
+          const badge = card.querySelector('.status-badge');
+          if (badge) { badge.className = 'status-badge status-cancelled'; badge.textContent = '● CANCELLED'; }
+        }
+        showToast('Booking ' + pnr + ' cancelled', 'info');
+      }, 1500);
+    }
+  </script>
+</body>
+</html>

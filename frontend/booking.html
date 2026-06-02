@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Your Journey — Nebula Travel</title>
+  <link rel="stylesheet" href="css/nebula.css">
+</head>
+<body data-page="booking">
+  <div class="nebula-bg"></div>
+  <canvas id="starfield"></canvas>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-orb">🌌</div>
+      <span class="nav-logo-text">NEBULA</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="my-bookings.html">My Bookings</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="theme-toggle">🌌</button>
+      <a href="vehicle-details.html"><button class="btn-ghost">← Back</button></a>
+    </div>
+    <button class="hamburger"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="nav-mobile">
+    <a href="index.html">🏠 Home</a>
+    <a href="vehicle-details.html">← Back to Details</a>
+  </div>
+
+  <div class="page-wrapper">
+    <div class="booking-wrap">
+
+      <!-- Journey Summary Bar -->
+      <div class="glass-card" style="padding:1.2rem 1.5rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="operator-logo" style="width:44px;height:44px;font-size:20px;">🌟</div>
+          <div>
+            <div style="font-family:'Orbitron',monospace;font-size:0.85rem;font-weight:700;">Mumbai Supernova Express</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);">Mumbai → Delhi · 22 Mar 2026 · 22:30</div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:0.72rem;color:var(--text-muted);">Selected Seats</div>
+          <div id="seatDisplay" style="font-family:'Orbitron',monospace;color:var(--nebula-primary);">Loading...</div>
+        </div>
+      </div>
+
+      <!-- STEP TRACKER -->
+      <div class="step-tracker">
+        <div class="step-item active">
+          <div class="step-orb">1</div>
+          <div class="step-label">Passenger</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item">
+          <div class="step-orb">2</div>
+          <div class="step-label">Boarding</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item">
+          <div class="step-orb">3</div>
+          <div class="step-label">Payment</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item">
+          <div class="step-orb">4</div>
+          <div class="step-label">Review</div>
+        </div>
+      </div>
+
+      <!-- STEP 1: PASSENGER DETAILS -->
+      <div class="step-panel active">
+        <div class="glass-card" style="padding:2rem;margin-bottom:1.5rem;">
+          <div style="font-family:'Orbitron',monospace;font-size:0.85rem;letter-spacing:2px;color:var(--nebula-primary);text-transform:uppercase;margin-bottom:1.5rem;">★ Passenger Details</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <div class="holo-input-wrap">
+                <label class="holo-input-label">Full Name *</label>
+                <input type="text" id="passengerName" class="holo-input" placeholder=" ">
+                <div class="holo-input-scan"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="holo-input-wrap">
+                <label class="holo-input-label">Age *</label>
+                <input type="number" id="passengerAge" class="holo-input" min="1" max="120" placeholder=" ">
+                <div class="holo-input-scan"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="holo-input-wrap">
+                <label class="holo-input-label">Gender *</label>
+                <select class="holo-input" id="passengerGender">
+                  <option value=""></option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Non-binary</option>
+                  <option>Prefer not to say</option>
+                </select>
+                <div class="holo-input-scan"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="holo-input-wrap">
+                <label class="holo-input-label">Mobile Number *</label>
+                <input type="tel" id="passengerPhone" class="holo-input" placeholder=" ">
+                <div class="holo-input-scan"></div>
+              </div>
+            </div>
+            <div class="form-group full">
+              <div class="holo-input-wrap">
+                <label class="holo-input-label">Email Address *</label>
+                <input type="email" id="passengerEmail" class="holo-input" placeholder=" ">
+                <div class="holo-input-scan"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Emergency contact -->
+        <div class="glass-card" style="padding:2rem;margin-bottom:1.5rem;">
+          <div style="font-family:'Orbitron',monospace;font-size:0.85rem;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:1.5rem;">Emergency Contact (Optional)</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <div class="holo-input-wrap">
+                <label class="holo-input-label">Contact Name</label>
+                <input type="text" class="holo-input" placeholder=" ">
+                <div class="holo-input-scan"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="holo-input-wrap">
+                <label class="holo-input-label">Contact Phone</label>
+                <input type="tel" class="holo-input" placeholder=" ">
+                <div class="holo-input-scan"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;">
+          <button class="btn-primary next-step-btn" style="padding:12px 32px;font-size:0.9rem;letter-spacing:1px;">Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: BOARDING POINT -->
+      <div class="step-panel">
+        <div class="glass-card" style="padding:2rem;margin-bottom:1.5rem;">
+          <div style="font-family:'Orbitron',monospace;font-size:0.85rem;letter-spacing:2px;color:var(--nebula-primary);text-transform:uppercase;margin-bottom:1.5rem;">✦ Select Boarding Point</div>
+
+          <div class="boarding-list">
+            <div class="boarding-item selected" data-time="22:30" data-stop="Chhatrapati Shivaji Maharaj Terminus">
+              <div class="boarding-radio"></div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:0.9rem;">Chhatrapati Shivaji Maharaj Terminus (CST)</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px;">22:30 · Bori Bunder, Fort, Mumbai</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-family:'Orbitron',monospace;font-size:0.9rem;color:var(--nebula-primary);">22:30</div>
+              </div>
+            </div>
+            <div class="boarding-item" data-time="22:50" data-stop="Dadar Bus Stand">
+              <div class="boarding-radio"></div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:0.9rem;">Dadar Bus Stand</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px;">22:50 · Dadar West, Mumbai</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-family:'Orbitron',monospace;font-size:0.9rem;color:var(--nebula-primary);">22:50</div>
+              </div>
+            </div>
+            <div class="boarding-item" data-time="23:15" data-stop="Borivali East Bus Stop">
+              <div class="boarding-radio"></div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:0.9rem;">Borivali East Bus Stop</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px;">23:15 · Borivali East, Mumbai</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-family:'Orbitron',monospace;font-size:0.9rem;color:var(--nebula-primary);">23:15</div>
+              </div>
+            </div>
+            <div class="boarding-item" data-time="23:45" data-stop="Mira Road Pickup">
+              <div class="boarding-radio"></div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:0.9rem;">Mira Road Pickup Point</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px;">23:45 · Near Mira Road Station</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-family:'Orbitron',monospace;font-size:0.9rem;color:var(--nebula-primary);">23:45</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Drop point -->
+        <div class="glass-card" style="padding:2rem;margin-bottom:1.5rem;">
+          <div style="font-family:'Orbitron',monospace;font-size:0.85rem;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:1rem;">Drop Point (Delhi)</div>
+          <div class="boarding-list">
+            <div class="boarding-item selected">
+              <div class="boarding-radio"></div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:0.9rem;">ISBT Kashmere Gate</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px;">07:00 · Kashmere Gate, Delhi</div>
+              </div>
+              <div style="font-family:'Orbitron',monospace;font-size:0.9rem;color:var(--nebula-cyan);">07:00</div>
+            </div>
+            <div class="boarding-item">
+              <div class="boarding-radio"></div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:0.9rem;">Anand Vihar ISBT</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px;">07:30 · Anand Vihar, Delhi</div>
+              </div>
+              <div style="font-family:'Orbitron',monospace;font-size:0.9rem;color:var(--nebula-cyan);">07:30</div>
+            </div>
+            <div class="boarding-item">
+              <div class="boarding-radio"></div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:0.9rem;">Connaught Place Drop</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px;">07:45 · CP, New Delhi</div>
+              </div>
+              <div style="font-family:'Orbitron',monospace;font-size:0.9rem;color:var(--nebula-cyan);">07:45</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;">
+          <button class="btn-ghost prev-step-btn">← Back</button>
+          <button class="btn-primary next-step-btn">Continue →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: PAYMENT -->
+      <div class="step-panel">
+        <div style="display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start;">
+          <div>
+            <!-- Promo code -->
+            <div class="glass-card" style="padding:1.5rem;margin-bottom:1.5rem;">
+              <div style="font-family:'Orbitron',monospace;font-size:0.85rem;letter-spacing:2px;color:var(--nebula-primary);text-transform:uppercase;margin-bottom:1rem;">✦ Promo Code</div>
+              <div class="promo-row">
+                <div class="holo-input-wrap" style="flex:1;">
+                  <label class="holo-input-label">Enter code</label>
+                  <input type="text" id="promoCode" class="holo-input" placeholder=" " style="text-transform:uppercase;">
+                  <div class="holo-input-scan"></div>
+                </div>
+                <button class="promo-apply-btn">APPLY</button>
+              </div>
+              <div style="margin-top:0.8rem;font-size:0.75rem;color:var(--text-muted);">Try: NEBULA20, COSMIC10, GALAXY15, SPACE25</div>
+            </div>
+
+            <!-- Payment methods -->
+            <div class="glass-card" style="padding:1.5rem;margin-bottom:1.5rem;">
+              <div style="font-family:'Orbitron',monospace;font-size:0.85rem;letter-spacing:2px;color:var(--nebula-primary);text-transform:uppercase;margin-bottom:1.2rem;">⚡ Payment Method</div>
+              <div class="payment-methods">
+                <div class="payment-method active" data-method="upi">
+                  <div class="payment-icon">📱</div>
+                  <div>
+                    <div class="payment-name">UPI</div>
+                    <div class="payment-desc">GPay, PhonePe, Paytm, BHIM</div>
+                  </div>
+                  <div style="margin-left:auto;font-size:0.72rem;color:#10B981;">INSTANT</div>
+                </div>
+                <div class="payment-method" data-method="card">
+                  <div class="payment-icon">💳</div>
+                  <div>
+                    <div class="payment-name">Credit / Debit Card</div>
+                    <div class="payment-desc">Visa, Mastercard, RuPay, Amex</div>
+                  </div>
+                </div>
+                <div class="payment-method" data-method="netbanking">
+                  <div class="payment-icon">🏦</div>
+                  <div>
+                    <div class="payment-name">Net Banking</div>
+                    <div class="payment-desc">All major Indian banks</div>
+                  </div>
+                </div>
+                <div class="payment-method" data-method="wallet">
+                  <div class="payment-icon">💰</div>
+                  <div>
+                    <div class="payment-name">Wallets</div>
+                    <div class="payment-desc">Paytm, Amazon Pay, Mobikwik</div>
+                  </div>
+                </div>
+                <div class="payment-method" data-method="emi">
+                  <div class="payment-icon">📅</div>
+                  <div>
+                    <div class="payment-name">EMI</div>
+                    <div class="payment-desc">No-cost EMI available on ₹3000+</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Payment details (UPI shown by default) -->
+              <div class="payment-detail" data-method="upi" style="margin-top:1.5rem;">
+                <div class="holo-input-wrap">
+                  <label class="holo-input-label">UPI ID (e.g., name@paytm)</label>
+                  <input type="text" class="holo-input" placeholder=" ">
+                  <div class="holo-input-scan"></div>
+                </div>
+                <div style="text-align:center;margin:1rem 0;color:var(--text-muted);font-size:0.8rem;">— or scan QR code —</div>
+                <div style="background:rgba(255,255,255,0.05);border:1px solid var(--glass-border);border-radius:12px;padding:2rem;text-align:center;">
+                  <div style="font-size:3rem;">📲</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:8px;">QR code will appear here at checkout</div>
+                </div>
+              </div>
+
+              <div class="payment-detail" data-method="card" style="display:none;margin-top:1.5rem;">
+                <div class="form-grid">
+                  <div class="form-group full">
+                    <div class="holo-input-wrap">
+                      <label class="holo-input-label">Card Number</label>
+                      <input type="text" class="holo-input" placeholder=" " maxlength="19">
+                      <div class="holo-input-scan"></div>
+                    </div>
+                  </div>
+                  <div class="form-group full">
+                    <div class="holo-input-wrap">
+                      <label class="holo-input-label">Cardholder Name</label>
+                      <input type="text" class="holo-input" placeholder=" ">
+                      <div class="holo-input-scan"></div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="holo-input-wrap">
+                      <label class="holo-input-label">Expiry (MM/YY)</label>
+                      <input type="text" class="holo-input" placeholder=" " maxlength="5">
+                      <div class="holo-input-scan"></div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="holo-input-wrap">
+                      <label class="holo-input-label">CVV</label>
+                      <input type="password" class="holo-input" placeholder=" " maxlength="3">
+                      <div class="holo-input-scan"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="payment-detail" data-method="netbanking" style="display:none;margin-top:1.5rem;">
+                <div class="holo-input-wrap">
+                  <label class="holo-input-label">Select Bank</label>
+                  <select class="holo-input">
+                    <option value=""></option>
+                    <option>State Bank of India</option>
+                    <option>HDFC Bank</option>
+                    <option>ICICI Bank</option>
+                    <option>Axis Bank</option>
+                    <option>Kotak Mahindra Bank</option>
+                    <option>Yes Bank</option>
+                    <option>Bank of Baroda</option>
+                    <option>Punjab National Bank</option>
+                  </select>
+                  <div class="holo-input-scan"></div>
+                </div>
+              </div>
+
+              <div class="payment-detail" data-method="wallet" style="display:none;margin-top:1.5rem;">
+                <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+                  <button style="padding:12px 20px;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text-secondary);cursor:pointer;font-size:0.85rem;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--nebula-primary)'" onmouseout="this.style.borderColor='var(--glass-border)'">💙 Paytm</button>
+                  <button style="padding:12px 20px;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text-secondary);cursor:pointer;font-size:0.85rem;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--nebula-primary)'" onmouseout="this.style.borderColor='var(--glass-border)'">🟠 Amazon Pay</button>
+                  <button style="padding:12px 20px;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text-secondary);cursor:pointer;font-size:0.85rem;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--nebula-primary)'" onmouseout="this.style.borderColor='var(--glass-border)'">🔵 Mobikwik</button>
+                </div>
+              </div>
+
+              <div class="payment-detail" data-method="emi" style="display:none;margin-top:1.5rem;">
+                <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1rem;">Select EMI tenure:</div>
+                <div style="display:flex;gap:0.8rem;flex-wrap:wrap;">
+                  <div style="padding:12px 20px;border-radius:12px;border:1px solid var(--nebula-primary);background:rgba(139,92,246,0.08);cursor:pointer;text-align:center;min-width:100px;">
+                    <div style="font-family:'Orbitron',monospace;font-size:0.9rem;color:var(--nebula-primary);">3 EMI</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;">₹295/mo</div>
+                    <div style="font-size:0.68rem;color:#10B981;margin-top:2px;">0% interest</div>
+                  </div>
+                  <div style="padding:12px 20px;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass-bg);cursor:pointer;text-align:center;min-width:100px;">
+                    <div style="font-family:'Orbitron',monospace;font-size:0.9rem;color:var(--text-primary);">6 EMI</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;">₹149/mo</div>
+                    <div style="font-size:0.68rem;color:var(--nebula-gold);margin-top:2px;">1.5% interest</div>
+                  </div>
+                  <div style="padding:12px 20px;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass-bg);cursor:pointer;text-align:center;min-width:100px;">
+                    <div style="font-family:'Orbitron',monospace;font-size:0.9rem;color:var(--text-primary);">12 EMI</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:4px;">₹76/mo</div>
+                    <div style="font-size:0.68rem;color:var(--nebula-gold);margin-top:2px;">2% interest</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Price summary sidebar -->
+          <div class="glass-card" style="padding:1.5rem;">
+            <div style="font-family:'Orbitron',monospace;font-size:0.8rem;letter-spacing:2px;color:var(--nebula-primary);text-transform:uppercase;margin-bottom:1rem;">Price Breakdown</div>
+            <div class="summary-row">
+              <span class="summary-label">Base Fare</span>
+              <span class="summary-val price-total-base">₹850</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Seat Charges</span>
+              <span class="summary-val">₹50</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">GST (5%)</span>
+              <span class="summary-val">₹45</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Convenience Fee</span>
+              <span class="summary-val">₹25</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Promo Discount</span>
+              <span class="summary-val promo-discount-val" style="color:#10B981;">—</span>
+            </div>
+            <div class="summary-row total">
+              <span class="summary-label">Total</span>
+              <span class="summary-val">₹970</span>
+            </div>
+            <div style="margin-top:0.8rem;font-size:0.72rem;color:var(--text-muted);text-align:center;padding:0.5rem;background:rgba(16,185,129,0.06);border-radius:8px;border:1px solid rgba(16,185,129,0.15);">
+              🔒 SSL Secured Payment
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:1.5rem;">
+          <button class="btn-ghost prev-step-btn">← Back</button>
+          <button class="btn-primary next-step-btn">Review Booking →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: REVIEW & CONFIRM -->
+      <div class="step-panel">
+        <div class="glass-card" style="padding:2rem;margin-bottom:1.5rem;">
+          <div style="font-family:'Orbitron',monospace;font-size:0.85rem;letter-spacing:2px;color:var(--nebula-primary);text-transform:uppercase;margin-bottom:1.5rem;">✦ Review Your Journey</div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+            <div>
+              <div style="font-size:0.72rem;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.8rem;">Journey Details</div>
+              <div style="font-size:0.9rem;color:var(--text-secondary);display:flex;flex-direction:column;gap:6px;">
+                <div>🚌 <strong>Mumbai Supernova Express</strong></div>
+                <div>📍 Mumbai CST → Delhi ISBT</div>
+                <div>📅 22 March 2026, 22:30</div>
+                <div>⏱ 8 hours 30 minutes</div>
+                <div>🛏 AC Sleeper Volvo</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.72rem;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;margin-bottom:0.8rem;">Passenger</div>
+              <div style="font-size:0.9rem;color:var(--text-secondary);display:flex;flex-direction:column;gap:6px;" id="reviewPassenger">
+                <div>👤 Name: <strong id="reviewName">—</strong></div>
+                <div>📱 Phone: <strong id="reviewPhone">—</strong></div>
+                <div>📧 Email: <strong id="reviewEmail">—</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:rgba(139,92,246,0.07);border:1px solid rgba(139,92,246,0.2);border-radius:14px;padding:1.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <div style="font-size:0.72rem;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;">Total Payable</div>
+              <div style="font-family:'Orbitron',monospace;font-size:2rem;font-weight:700;background:linear-gradient(135deg,var(--nebula-primary),var(--nebula-pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">₹970</div>
+            </div>
+            <div style="font-size:0.8rem;color:var(--text-muted);max-width:300px;line-height:1.6;">
+              By clicking Confirm, you agree to our <a href="#" style="color:var(--nebula-primary);">Terms & Conditions</a> and <a href="#" style="color:var(--nebula-primary);">Cancellation Policy</a>.
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;">
+          <button class="btn-ghost prev-step-btn">← Back</button>
+          <button class="confirm-booking-btn" style="padding:14px 40px;background:linear-gradient(135deg,var(--nebula-primary),var(--nebula-pink));border:none;border-radius:30px;color:white;font-family:'Orbitron',monospace;font-size:0.9rem;font-weight:700;letter-spacing:2px;cursor:pointer;box-shadow:0 8px 30px var(--nebula-glow);transition:all 0.3s var(--transition-smooth);"
+            onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 16px 40px var(--nebula-glow)'"
+            onmouseout="this.style.transform='';this.style.boxShadow='0 8px 30px var(--nebula-glow)'">
+            🚀 CONFIRM BOOKING
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="footer">
+      <div class="footer-logo">✦ NEBULA TRAVEL ✦</div>
+      <div>© 2026 Nebula Travel · Made with 💜 in Mumbai</div>
+    </footer>
+  </div>
+  <script src="js/auth.js"></script>
+  <script src="js/cosmic.js"></script>
+  <script>
+    // All booking flow logic is handled by cosmic.js initBookingSteps()
+    // This script just patches the static ₹970 total with URL param value
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const total = params.get('total');
+      if (total) {
+        // Patch total in review step
+        document.querySelectorAll('.review-total-val').forEach(el => {
+          el.textContent = '₹' + parseInt(total).toLocaleString('en-IN');
+        });
+        // Patch the hardcoded ₹970 in step 4
+        const totalDisplays = document.querySelectorAll('[style*="font-size:2rem"]');
+        totalDisplays.forEach(el => {
+          if (el.textContent.includes('₹')) el.textContent = '₹' + parseInt(total).toLocaleString('en-IN');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

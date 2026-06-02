@@ -1,0 +1,27 @@
+{
+  "name": "nebula-travel-backend",
+  "version": "1.0.0",
+  "description": "Nebula Travel — Node.js + MySQL backend (no Express, no JWT, no localStorage)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "setup": "mysql -u root -p < schema.sql"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "mysql2": "^3.9.7",
+    "nodemon": "^3.1.14"
+  },
+  "keywords": [
+    "nebula",
+    "travel",
+    "booking",
+    "nodejs",
+    "mysql"
+  ],
+  "license": "MIT"
+}
